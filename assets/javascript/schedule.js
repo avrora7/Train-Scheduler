@@ -21,8 +21,8 @@ $("#submit").on("click", function (event) {
   trainName = $("#trainName").val().trim();
   destination = $("#destination").val().trim();
   frequency = parseInt($("#frequency").val().trim());
-  firstTrainTime = $("#firstTrainTime").val().trim(); 
-  
+  firstTrainTime = $("#firstTrainTime").val().trim();
+
   if (trainName == "") {
     alert("Enter train name");
     return;
@@ -55,11 +55,10 @@ $("#submit").on("click", function (event) {
     firstTrainTime: firstTrainTime,
   });
 
+  $("form")[0].reset();
 });
 
-database.ref().on("child_added", function(event) {
-
-  console.log(JSON.stringify(event));
+database.ref().on("child_added", function (event) {
 
   var newRow = $("<tr>")
   var tdTrainName = $("<td>")
@@ -70,15 +69,14 @@ database.ref().on("child_added", function(event) {
   tdFrequency.text(event.val().frequency)
   var tdNextArrival = $("<td>")
 
-    var firstTimeConverted = moment(event.val().firstTrainTime, "HH:mm").subtract(1, "years");
-    var currentTime = moment();
-    console.log(JSON.stringify(currentTime));
-    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-    var tRemainder = diffTime % event.val().frequency;
-    var tMinutesTillTrain = event.val().frequency - tRemainder;
-    var nextTrain = moment().add(tMinutesTillTrain, "minutes").format('LT');
-  
-  tdNextArrival.text(nextTrain) 
+  var firstTimeConverted = moment(event.val().firstTrainTime, "HH:mm").subtract(1, "years");
+  var currentTime = moment();
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+  var tRemainder = diffTime % event.val().frequency;
+  var tMinutesTillTrain = event.val().frequency - tRemainder;
+  var nextTrain = moment().add(tMinutesTillTrain, "minutes").format('LT');
+
+  tdNextArrival.text(nextTrain)
   var tdMinutesAway = $("<td>")
   tdMinutesAway.text(tMinutesTillTrain)
   newRow.append(tdTrainName, tdDestination, tdFrequency, tdNextArrival, tdMinutesAway)
